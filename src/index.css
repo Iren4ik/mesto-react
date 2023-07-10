@@ -50,9 +50,10 @@
 @import url(./blocks/popup/_opened/popup_opened.css);
 @import url(./blocks/popup/_overlay/popup_overlay_light.css);
 @import url(./blocks/popup/_overlay/popup_overlay_dark.css);
-@import url(./blocks/popup/__container/_type/popup__container_type_form.css);
+@import url(./blocks/popup/__container/_type/popup__container_type_add-cards.css);
+@import url(./blocks/popup/__container/_type/popup__container_type_edit-form.css);
 @import url(./blocks/popup/__container/_type/popup__container_type_delete.css);
-@import url(./blocks/popup/__container/_type/popup__container_type_avatar.css);
+@import url(./blocks/popup/__container/_type/popup__container_type_edit-avatar.css);
 @import url(./blocks/popup/__save-btn/_disabled/popup__save-btn_disabled.css);
 @import url(./blocks/popup/__save-btn/_delete/popup__save-btn_delete.css);
 @import url(./blocks/popup/__input/_valid_error/popup__input_valid_error.css);
