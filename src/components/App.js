@@ -14,15 +14,15 @@ function App() {
 
   //2. Функция меняет перемнную состояния из false в true
   function handleEditAvatarClick() {
-    setEditProfilePopupOpen(true);
+    setEditAvatarPopupOpen(true);
   }
   
   function handleEditProfileClick() {
-    setAddPlacePopupOpen(true);
+    setEditProfilePopupOpen(true);
   }
   
   function handleAddPlaceClick() {
-    setEditAvatarPopupOpen(true);
+    setAddPlacePopupOpen(true);
   }
 
   function closeAllPopups() {
@@ -30,7 +30,6 @@ function App() {
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
   }
-  
 
   return (
     <div className="page">
@@ -102,8 +101,6 @@ function App() {
         title="Обновить аватар"
         btnText="Да"
       />
-
-
 
         <template id="elements-template">
           <li className="elements__element">
