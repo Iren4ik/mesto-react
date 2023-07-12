@@ -11,6 +11,7 @@ function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState(null);
 
   //2. Функция меняет перемнную состояния из false в true
   function handleEditAvatarClick() {
@@ -29,6 +30,11 @@ function App() {
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
+    setSelectedCard(null);
+  }
+
+  function handleCardClick(card) {
+    setSelectedCard(card);
   }
 
   return (
@@ -39,9 +45,14 @@ function App() {
         onEditAvatar={handleEditAvatarClick}
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleAddPlaceClick}
+        onCardClick={handleCardClick}
       />
       <Footer />
-      <ImagePopup />
+
+      <ImagePopup 
+        card={selectedCard}
+        onClose={closeAllPopups}
+      />
 
       <PopupWithForm 
         name="edit-form"
@@ -101,20 +112,6 @@ function App() {
         title="Обновить аватар"
         btnText="Да"
       />
-
-        <template id="elements-template">
-          <li className="elements__element">
-            <button className="elements__trash opacity" type="button"></button>
-            <img className="elements__photo opacity" src="#" alt="Фото"/>
-            <div className="elements__caption">
-              <h2 className="elements__place"></h2>
-              <div className="elements__like-container">
-                <button className="elements__like" type="button"></button>
-                <p className="elements__like-counter">0</p>
-              </div>
-            </div>
-          </li>
-        </template>
     </div>
   );
 }

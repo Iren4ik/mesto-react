@@ -18,7 +18,7 @@
 
 @media screen and (max-width: 980px) {
   .header {
-    margin: 36px auto 0;
+    margin: 0 auto 0;
     width: 90%;
   }
   .header::after {
@@ -28,7 +28,7 @@
 
 @media screen and (max-width: 768px) {
   .header {
-    margin: 28px auto 0;
+    margin: 0 auto 0;
     width: 100%;
   }
   .header::after {

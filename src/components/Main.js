@@ -1,26 +1,24 @@
 import React from "react";
-import api from "../utils/Api";
+import api from "../utils/api";
+import Card from "./Card";
 
-function Main({onEditAvatar, onEditProfile, onAddPlace}) {
+function Main({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) {
 
   const [userName, setUserName] = React.useState(false);
   const [userDescription, setUserDescription] = React.useState(false);
   const [userAvatar, setUserAvatar] = React.useState(false);
+  const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
-    api.getProfileInfo()
-      .then((dataUser) => {
+    Promise.all([api.getProfileInfo(), api.getInitialCards()])
+      .then(([dataUser, dataCards]) => {
         setUserName(dataUser.name);
         setUserDescription(dataUser.about);
         setUserAvatar(dataUser.avatar);
-
-        // console.log(userAvatar);
-        // console.log(userName);
-        // console.log(userDescription);
+        setCards(dataCards);
       })
       .catch(error => console.log(`Что-то пошло не так: ${error}`));
-    }
-  );
+    }, []);
 
   return (
     <main className="content">
@@ -53,7 +51,12 @@ function Main({onEditAvatar, onEditProfile, onAddPlace}) {
 
         <section className="elements">
           <ul className="elements__items">
-
+            {/* Для каждой карточки из массива cards вставляем разметку компонента Card*/}
+            {cards.map((card) => {
+              return (
+                <Card card={card} key={card._id} onCardClick={onCardClick} />
+              )
+            })}
           </ul>
         </section>
       </main>
