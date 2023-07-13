@@ -13,25 +13,28 @@ class Api {
       return Promise.reject(`Ой! Ошибка: ${res.status}`);
   }
 
+  //Универсальный метода запроса
+  _request(url, options) {
+    return fetch(url, options).then(this._checkResponse)
+  }
+
   //Загрузка информации о пользователе с сервера
   getProfileInfo() {
-    return fetch(`${this._baseUrl}/users/me`, {
+    return this._request(`${this._baseUrl}/users/me`, {
       headers: {authorization: this._authorization}
     })
-      .then(this._checkResponse);
   }
 
   //Загрузка карточек с сервера
   getInitialCards() {
-    return fetch(`${this._baseUrl}/cards`, {
+    return this._request(`${this._baseUrl}/cards`, {
       headers: {authorization: this._authorization}
     })
-      .then(this._checkResponse);
   } 
 
   // //Редактирование профиля
   // patchProfileInfo(dataUser) {
-  //   return fetch(`${this._baseUrl}/users/me`, {
+  //   return this._request(`${this._baseUrl}/users/me`, {
   //     method: 'PATCH',
   //     headers: this._headers,
   //     body: JSON.stringify({
@@ -39,24 +42,22 @@ class Api {
   //       about: dataUser.job,
   //     })
   //   })
-  //     .then(this._checkResponse);
   // }
 
   // //Обновление аватара пользователя
   // patchAvatar(dataUser) {
-  //   return fetch(`${this._baseUrl}/users/me/avatar`, {
+  //   return this._request(`${this._baseUrl}/users/me/avatar`, {
   //     method: 'PATCH',
   //     headers: this._headers,
   //     body: JSON.stringify({
   //       avatar: dataUser.avatar,
   //     })
   //   })
-  //     .then(this._checkResponse);
   // }
 
   // //Добавление новой карточки
   // postNewCard(dataCard) {
-  //   return fetch(`${this._baseUrl}/cards`, {
+  //   return this._request(`${this._baseUrl}/cards`, {
   //     method: 'POST',
   //     headers: this._headers,
   //     body: JSON.stringify({
@@ -64,34 +65,30 @@ class Api {
   //       link: dataCard.link,
   //     })
   //   })
-  //     .then(this._checkResponse);
   // }
 
   // // Постановка лайка
   // putLike(cardId) {
-  //   return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+  //   return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
   //     method: 'PUT',
   //     headers: {authorization: this._authorization}
   //   })
-  //     .then(this._checkResponse);
   // }
 
   // // Снятие лайка
   // deleteLike(cardId) {
-  //   return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+  //   return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
   //     method: 'DELETE',
   //     headers: {authorization: this._authorization}
   //   })
-  //   .then(this._checkResponse)
   // }
 
   // //Удаление карточки
   // deleteCard(cardId){
-  //   return fetch(`${this._baseUrl}/cards/${cardId}`, {
+  //   return this._request(`${this._baseUrl}/cards/${cardId}`, {
   //       method: 'DELETE',
   //       headers: {authorization: this._authorization}
   //   })
-  //     .then(this._checkResponse)
   // }
 }
 
