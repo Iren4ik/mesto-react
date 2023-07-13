@@ -57,7 +57,7 @@ function App() {
       <PopupWithForm 
         name="edit-form"
         title="Редактировать профиль"
-        btnText="Сохранить"
+        btnText="Сохранить изменения"
         //3. isEditProfilePopupOpen = true ? popup_opened --> попап открывается
         isOpen={isEditProfilePopupOpen} 
         onClose={closeAllPopups}
