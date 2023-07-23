@@ -1,118 +1,196 @@
-import React from 'react';
-import Header from './Header';
-import Main from './Main';
-import Footer from './Footer';
-import PopupWithForm from './PopupWithForm';
-import ImagePopup from './ImagePopup';
-
+import React from "react";
+import Header from "./Header";
+import Main from "./Main";
+import Footer from "./Footer";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
+import ImagePopup from "./ImagePopup";
+import DeleteCardPopup from "./DeleteCardPopup";
+import { api } from "../utils/api.js";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function App() {
-
-  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] =
+    React.useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
+  const [isDeleteCardPopupOpen, setDeleteCardPopupOpen] = React.useState(false);
+  const [isPreloading, setPreloading] = React.useState(false);
+  // Стейт, отвечающий за отображение данных текущего пользователя
+  const [currentUser, setCurrentUser] = React.useState({});
+  //Создание стейта карточек
+  const [cards, setCards] = React.useState([]);
+  //Стейт, отвечающий за выбранную карточку
   const [selectedCard, setSelectedCard] = React.useState(null);
+  const [cardToDelete, setCardToDelete] = React.useState({});
 
-  //2. Функция меняет перемнную состояния из false в true
+  React.useEffect(() => {
+    Promise.all([api.getProfileInfo(), api.getInitialCards()])
+      .then(([dataUser, dataCards]) => {
+        setCurrentUser(dataUser);
+        setCards(dataCards);
+      })
+      .catch((error) => console.log(`Что-то пошло не так: ${error}`));
+  }, []);
+
+  // Открытие попапа ававтара
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
   }
-  
+
+  // Открытие попапа реадиктирования попапа
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
   }
-  
+
+  // Открытие попапа добавления карточки
   function handleAddPlaceClick() {
     setAddPlacePopupOpen(true);
   }
 
+  // Открытие попапа удаления карточки
+  function handleDeleteCardClick(card) {
+    setDeleteCardPopupOpen(true);
+    setCardToDelete(card);
+  }
+
+  // Закрытие попапов
   function closeAllPopups() {
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
+    setDeleteCardPopupOpen(false);
     setSelectedCard(null);
+    setCardToDelete({});
   }
 
+  // Открытие выбранной карточки
   function handleCardClick(card) {
     setSelectedCard(card);
   }
 
+  // Поставить лайк
+  function handleCardLike(card) {
+    // Проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((state) =>
+          state.map((c) => (c._id === card._id ? newCard : c))
+        );
+      })
+      .catch((error) => console.log(`Что-то пошло не так: ${error}`));
+  }
+
+  // Удалить карточку
+  function handleCardDelete(card) {
+    setPreloading(true);
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        //  создаем копию массива, исключив удаленную карточку и обновляем стейт
+        setCards((state) => state.filter((c) => c._id !== card._id));
+        closeAllPopups();
+      })
+      .catch((error) => console.log(`Что-то пошло не так: ${error}`))
+      .finally(() => {
+        setPreloading(false);
+        setCardToDelete({});
+      });
+  }
+
+  //Обновить данные профиля
+  function handleUpdateUser(newDataUser) {
+    setPreloading(true);
+    api
+      .setUserInfo(newDataUser)
+      .then((dataUser) => {
+        setCurrentUser(dataUser);
+        closeAllPopups();
+      })
+      .catch((error) => console.log(`Что-то пошло не так: ${error}`))
+      .finally(() => setPreloading(false));
+  }
+
+  function handleUpdateAvatar(newAvatar) {
+    setPreloading(true);
+    api
+      .setUserAvatar(newAvatar)
+      .then((dataUser) => {
+        setCurrentUser(dataUser);
+        closeAllPopups();
+      })
+      .catch((error) => console.log(`Что-то пошло не так: ${error}`))
+      .finally(() => setPreloading(false));
+  }
+
+  function handleAddPlaceSubmit(cardData) {
+    setPreloading(true);
+    api
+      .postNewCard(cardData)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((error) => console.log(`Что-то пошло не так: ${error}`))
+      .finally(() => setPreloading(false));
+  }
+
+  //«Внедряем» данные из currentUser с помощью провайдера
+  //пропс value содержит значение, которое распространаяется дочерним элементам
   return (
-    <div className="page">
-      <Header />
-      <Main 
-        //1. Обработчики. При клике вызывается функция
-        onEditAvatar={handleEditAvatarClick}
-        onEditProfile={handleEditProfileClick}
-        onAddPlace={handleAddPlaceClick}
-        onCardClick={handleCardClick}
-      />
-      <Footer />
+    <CurrentUserContext.Provider value={currentUser}>
+      <div className="page">
+        <Header />
+        <Main
+          //1. Обработчики. При клике вызывается функция
+          onEditAvatar={handleEditAvatarClick}
+          onEditProfile={handleEditProfileClick}
+          onAddPlace={handleAddPlaceClick}
+          onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+          // onCardDelete={handleCardDelete}
+          onTrashClick={handleDeleteCardClick}
+          cards={cards}
+        />
 
-      <ImagePopup 
-        card={selectedCard}
-        onClose={closeAllPopups}
-      />
+        <Footer />
 
-      <PopupWithForm 
-        name="edit-form"
-        title="Редактировать профиль"
-        btnText="Сохранить изменения"
-        //3. isEditProfilePopupOpen = true ? popup_opened --> попап открывается
-        isOpen={isEditProfilePopupOpen} 
-        onClose={closeAllPopups}
-      >
-        <label className="popup__input-element">
-          <input className="popup__input popup__input_type_name" id="name" type="text" name="username" 
-            placeholder="Имя" minLength="2" maxLength="40" required/>
-          <span className="name-error popup__error"></span>
-        </label>
-        <label className="popup__input-element">
-          <input className="popup__input popup__input_type_job" id="job" type="text" name="job" 
-            placeholder="О себе" minLength="2" maxLength="200" required/>
-          <span className="job-error popup__error"></span>
-        </label>
-      </PopupWithForm>
-      
-      <PopupWithForm 
-        name="add-cards"
-        title="Новое место"
-        btnText="Создать"
-        isOpen={isAddPlacePopupOpen}
-        onClose={closeAllPopups}
-      >
-        <label className="popup__input-element">
-          <input className="popup__input popup__input_type_caption" id="caption" type="text" name="name"
-            placeholder="Название" minLength="2" maxLength="30" required/>
-          <span className="caption-error popup__error"></span>
-        </label>
-        <label className="popup__input-element">
-          <input className="popup__input popup__input_type_link" id="link" type="url" name="link"
-            placeholder="Ссылка на картинку" required/>
-          <span className="link-error popup__error"></span>
-        </label>
-      </PopupWithForm>
+        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
-      <PopupWithForm 
-        name="edit-avatar"
-        title="Обновить аватар"
-        btnText="Сохранить"
-        isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}
-      >
-        <label className="popup__input-element">
-          <input className="popup__input popup__input_type_avatar" id="avatar" type="url" name="avatar"
-            placeholder="Ссылка на картинку" required/>
-          <span className="avatar-error popup__error"></span>
-        </label>
-      </PopupWithForm>
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser}
+          isPreloading={isPreloading}
+        />
 
-      <PopupWithForm 
-        name="delete"
-        title="Обновить аватар"
-        btnText="Да"
-      />
-    </div>
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+          isPreloading={isPreloading}
+        />
+
+        <AddPlacePopup
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          onAddPlace={handleAddPlaceSubmit}
+          isPreloading={isPreloading}
+        />
+
+        <DeleteCardPopup
+          isOpen={isDeleteCardPopupOpen}
+          onClose={closeAllPopups}
+          isPreloading={isPreloading}
+          card={cardToDelete}
+          onCardDelete={handleCardDelete}
+        />
+      </div>
+    </CurrentUserContext.Provider>
   );
 }
 

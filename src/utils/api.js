@@ -32,64 +32,63 @@ class Api {
     })
   } 
 
-  // //Редактирование профиля
-  // patchProfileInfo(dataUser) {
-  //   return this._request(`${this._baseUrl}/users/me`, {
-  //     method: 'PATCH',
-  //     headers: this._headers,
-  //     body: JSON.stringify({
-  //       name: dataUser.username,
-  //       about: dataUser.job,
-  //     })
-  //   })
-  // }
+  //Редактирование профиля
+  setUserInfo(dataUser) {
+    return this._request(`${this._baseUrl}/users/me`, {
+      method: 'PATCH',
+      headers: this._headers,
+      body: JSON.stringify({
+        name: dataUser.name,
+        about: dataUser.about,
+      })
+    })
+  }
 
-  // //Обновление аватара пользователя
-  // patchAvatar(dataUser) {
-  //   return this._request(`${this._baseUrl}/users/me/avatar`, {
-  //     method: 'PATCH',
-  //     headers: this._headers,
-  //     body: JSON.stringify({
-  //       avatar: dataUser.avatar,
-  //     })
-  //   })
-  // }
+  //Обновление аватара пользователя
+  setUserAvatar(dataUser) {
+    return this._request(`${this._baseUrl}/users/me/avatar`, {
+      method: 'PATCH',
+      headers: this._headers,
+      body: JSON.stringify({
+        avatar: dataUser.avatar,
+      })
+    })
+  }
 
-  // //Добавление новой карточки
-  // postNewCard(dataCard) {
-  //   return this._request(`${this._baseUrl}/cards`, {
-  //     method: 'POST',
-  //     headers: this._headers,
-  //     body: JSON.stringify({
-  //       name: dataCard.name,
-  //       link: dataCard.link,
-  //     })
-  //   })
-  // }
+  //Добавление новой карточки
+  postNewCard(dataCard) {
+    return this._request(`${this._baseUrl}/cards`, {
+      method: 'POST',
+      headers: this._headers,
+      body: JSON.stringify({
+        name: dataCard.name,
+        link: dataCard.link,
+      })
+    })
+  }
 
-  // // Постановка лайка
-  // putLike(cardId) {
-  //   return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
-  //     method: 'PUT',
-  //     headers: {authorization: this._authorization}
-  //   })
-  // }
+  changeLikeCardStatus(cardId, isLiked) {
+    if (isLiked) {
+      return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
+        method: 'PUT',
+        headers: {authorization: this._authorization}
+      })
+    } else {
+      return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
+        method: 'DELETE',
+        headers: {authorization: this._authorization}
+      })
+    }
+  }
 
-  // // Снятие лайка
-  // deleteLike(cardId) {
-  //   return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
-  //     method: 'DELETE',
-  //     headers: {authorization: this._authorization}
-  //   })
-  // }
 
-  // //Удаление карточки
-  // deleteCard(cardId){
-  //   return this._request(`${this._baseUrl}/cards/${cardId}`, {
-  //       method: 'DELETE',
-  //       headers: {authorization: this._authorization}
-  //   })
-  // }
+  //Удаление карточки
+  deleteCard(cardId){
+    return this._request(`${this._baseUrl}/cards/${cardId}`, {
+        method: 'DELETE',
+        headers: {authorization: this._authorization}
+    })
+  }
 }
 
 export const api = new Api({
