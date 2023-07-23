@@ -11,17 +11,14 @@ import { api } from "../utils/api.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function App() {
-  const [isEditProfilePopupOpen, setEditProfilePopupOpen] =
-    React.useState(false);
+
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
   const [isDeleteCardPopupOpen, setDeleteCardPopupOpen] = React.useState(false);
   const [isPreloading, setPreloading] = React.useState(false);
-  // Стейт, отвечающий за отображение данных текущего пользователя
   const [currentUser, setCurrentUser] = React.useState({});
-  //Создание стейта карточек
   const [cards, setCards] = React.useState([]);
-  //Стейт, отвечающий за выбранную карточку
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [cardToDelete, setCardToDelete] = React.useState({});
 
@@ -75,12 +72,9 @@ function App() {
     // Проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api
-      .changeLikeCardStatus(card._id, !isLiked)
+    api.changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
-        setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
-        );
+        setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
       })
       .catch((error) => console.log(`Что-то пошло не так: ${error}`));
   }
@@ -88,8 +82,7 @@ function App() {
   // Удалить карточку
   function handleCardDelete(card) {
     setPreloading(true);
-    api
-      .deleteCard(card._id)
+    api.deleteCard(card._id)
       .then(() => {
         //  создаем копию массива, исключив удаленную карточку и обновляем стейт
         setCards((state) => state.filter((c) => c._id !== card._id));
@@ -105,8 +98,7 @@ function App() {
   //Обновить данные профиля
   function handleUpdateUser(newDataUser) {
     setPreloading(true);
-    api
-      .setUserInfo(newDataUser)
+    api.setUserInfo(newDataUser)
       .then((dataUser) => {
         setCurrentUser(dataUser);
         closeAllPopups();
@@ -117,8 +109,7 @@ function App() {
 
   function handleUpdateAvatar(newAvatar) {
     setPreloading(true);
-    api
-      .setUserAvatar(newAvatar)
+    api.setUserAvatar(newAvatar)
       .then((dataUser) => {
         setCurrentUser(dataUser);
         closeAllPopups();
@@ -129,8 +120,7 @@ function App() {
 
   function handleAddPlaceSubmit(cardData) {
     setPreloading(true);
-    api
-      .postNewCard(cardData)
+    api.postNewCard(cardData)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
@@ -152,7 +142,6 @@ function App() {
           onAddPlace={handleAddPlaceClick}
           onCardClick={handleCardClick}
           onCardLike={handleCardLike}
-          // onCardDelete={handleCardDelete}
           onTrashClick={handleDeleteCardClick}
           cards={cards}
         />

@@ -3,15 +3,8 @@ import React from "react";
 import Card from "./Card";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function Main({
-  onEditAvatar,
-  onEditProfile,
-  onAddPlace,
-  onCardClick,
-  onCardLike,
-  onTrashClick,
-  cards,
-}) {
+function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, onTrashClick, cards }) {
+  
   // Подписываемся на контекст CurrentUserContext
   // React.useContext возвращает значение контекста, которое передано в пропс value провайдера
   const currentUser = React.useContext(CurrentUserContext);
@@ -58,7 +51,6 @@ function Main({
                 key={card._id}
                 onCardClick={onCardClick}
                 onCardLike={onCardLike}
-                // onCardDelete={onCardDelete}
                 onTrashClick={onTrashClick}
               />
             );

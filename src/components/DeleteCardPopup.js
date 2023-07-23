@@ -1,13 +1,8 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
-function DeleteCardPopup({
-  isOpen,
-  onClose,
-  isPreloading,
-  card,
-  onCardDelete,
-}) {
+function DeleteCardPopup({ isOpen, onClose, isPreloading, card, onCardDelete,}) {
+  
   function handleSubmit(e) {
     e.preventDefault();
     onCardDelete(card);

@@ -67,6 +67,7 @@ class Api {
     })
   }
 
+  //добавление и удаление лайков
   changeLikeCardStatus(cardId, isLiked) {
     if (isLiked) {
       return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
@@ -80,7 +81,6 @@ class Api {
       })
     }
   }
-
 
   //Удаление карточки
   deleteCard(cardId){
