@@ -1,7 +1,7 @@
 import React from "react";
-import {CurrentUserContext} from '../contexts/CurrentUserContext';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function Card({card, onCardClick, onCardLike, onTrashClick}) {
+function Card({ card, onCardClick, onCardLike, onTrashClick }) {
   // Подписываемся на контекст CurrentUserContext
   // React.useContext возвращает значение контекста, которое передано в пропс value провайдера
   const currentUser = React.useContext(CurrentUserContext);
@@ -13,8 +13,8 @@ function Card({card, onCardClick, onCardLike, onTrashClick}) {
   const isLiked = card.likes.some(i => i._id === currentUser._id);
 
   // Создаём переменную, которую зададим в `className` для кнопки лайка
-  const cardLikeButtonClassName = ( 
-    `elements__like ${isLiked && 'elements__like_active'}` 
+  const cardLikeButtonClassName = (
+    `elements__like ${isLiked && 'elements__like_active'}`
   );
 
   function handleClick() {

@@ -12,14 +12,14 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, isPreloading }) {
     onUpdateAvatar({
       avatar: avatarRef.current.value,
     });
-  } 
+  }
 
   React.useEffect(() => {
     avatarRef.current.value = null;
   }, [isOpen]);
 
   return (
-    <PopupWithForm 
+    <PopupWithForm
       name="edit-avatar"
       title="Обновить аватар"
       btnText={isPreloading ? 'Сохранение...' : 'Сохранить'}

@@ -10,7 +10,7 @@ class Api {
     if (res.ok) {
       return res.json();
     }
-      return Promise.reject(`Ой! Ошибка: ${res.status}`);
+    return Promise.reject(`Ой! Ошибка: ${res.status}`);
   }
 
   //Универсальный метода запроса
@@ -21,16 +21,16 @@ class Api {
   //Загрузка информации о пользователе с сервера
   getProfileInfo() {
     return this._request(`${this._baseUrl}/users/me`, {
-      headers: {authorization: this._authorization}
+      headers: { authorization: this._authorization }
     })
   }
 
   //Загрузка карточек с сервера
   getInitialCards() {
     return this._request(`${this._baseUrl}/cards`, {
-      headers: {authorization: this._authorization}
+      headers: { authorization: this._authorization }
     })
-  } 
+  }
 
   //Редактирование профиля
   setUserInfo(dataUser) {
@@ -72,21 +72,21 @@ class Api {
     if (isLiked) {
       return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
         method: 'PUT',
-        headers: {authorization: this._authorization}
+        headers: { authorization: this._authorization }
       })
     } else {
       return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
         method: 'DELETE',
-        headers: {authorization: this._authorization}
+        headers: { authorization: this._authorization }
       })
     }
   }
 
   //Удаление карточки
-  deleteCard(cardId){
+  deleteCard(cardId) {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
-        method: 'DELETE',
-        headers: {authorization: this._authorization}
+      method: 'DELETE',
+      headers: { authorization: this._authorization }
     })
   }
 }
