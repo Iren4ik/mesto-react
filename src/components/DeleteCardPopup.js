@@ -13,7 +13,6 @@ function DeleteCardPopup({ isOpen, onClose, isPreloading, card, onCardDelete,}) 
       name="delete"
       title="Вы уверены?"
       btnText={isPreloading ? "Удаление..." : "Удалить"}
-      //3. isEditProfilePopupOpen = true ? popup_opened --> попап открывается
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}

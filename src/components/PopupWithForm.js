@@ -1,6 +1,9 @@
 import React from "react";
+import { usePopupClose } from "../hooks/usePopupClose";
 
 function PopupWithForm({name, title, children, btnText, isOpen, onClose, onSubmit}) {
+
+  usePopupClose(isOpen, onClose);
   
   return (
     <div className={`popup popup_overlay_light popup_feat_${name} ${isOpen ? "popup_opened" : ""}`}>

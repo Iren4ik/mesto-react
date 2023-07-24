@@ -3,8 +3,8 @@ import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function EditProfilePopup({ isOpen, onClose, onUpdateUser, isPreloading }) {
-  const [name, setName] = React.useState('');
-  const [description, setDescription] = React.useState('');
+  const [name, setName] = React.useState("");
+  const [description, setDescription] = React.useState("");
   // Подписка на контекст
   const currentUser = React.useContext(CurrentUserContext);
 
@@ -13,7 +13,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, isPreloading }) {
   React.useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-  }, [currentUser]);
+  }, [currentUser, isOpen]);
 
   function handleChangeName(e) {
     setName(e.target.value);
@@ -38,7 +38,6 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, isPreloading }) {
       name="edit-form"
       title="Редактировать профиль"
       btnText={isPreloading ? "Сохранение..." : "Сохранить"}
-      //3. isEditProfilePopupOpen = true ? popup_opened --> попап открывается
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
@@ -53,7 +52,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, isPreloading }) {
           minLength="2"
           maxLength="40"
           required
-          value={name}
+          value={name || ''}
           onChange={handleChangeName}
         />
         <span className="name-error popup__error"></span>
@@ -68,7 +67,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, isPreloading }) {
           minLength="2"
           maxLength="200"
           required
-          value={description}
+          value={description || ''}
           onChange={handleChangeDescription}
         />
         <span className="job-error popup__error"></span>

@@ -2,17 +2,28 @@ import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
 function AddPlacePopup({ isOpen, onClose, onAddPlace, isPreloading }) {
-  // записываем в переменную объект, возвращаемый хуком. Он содержит единственное поле - current
-  //в это поле Реакт запишет указатель на DOM-элемент, когда будет формировать DOM -дерево
-  const cardTitleRef = React.useRef();
-  const cardLinkRef = React.useRef();
 
-  //Вызываем метод value на поле current объекта
+  const [title, setTitle] = React.useState("");
+  const [link, setLink] = React.useState("");
+
+  React.useEffect(() => {
+    setTitle("");
+    setLink("");
+  }, [isOpen]);
+
+  function handleChangeTitle(e) {
+    setTitle(e.target.value);
+  }
+
+  function handleChangeLink(e) {
+    setLink(e.target.value);
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     onAddPlace({
-      name: cardTitleRef.current.value,
-      link: cardLinkRef.current.value,
+      name: title,
+      link,
     });
   }
 
@@ -35,7 +46,8 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, isPreloading }) {
           minLength="2"
           maxLength="30"
           required
-          ref={cardTitleRef}
+          value={title || ""}
+          onChange={handleChangeTitle}
         />
         <span className="caption-error popup__error"></span>
       </label>
@@ -47,7 +59,8 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, isPreloading }) {
           name="link"
           placeholder="Ссылка на картинку"
           required
-          ref={cardLinkRef}
+          value={link || ""}
+          onChange={handleChangeLink}
         />
         <span className="link-error popup__error"></span>
       </label>

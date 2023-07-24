@@ -11,7 +11,6 @@ import { api } from "../utils/api.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function App() {
-
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
@@ -67,66 +66,72 @@ function App() {
     setSelectedCard(card);
   }
 
+  //универсальная функция, принимающая функцию запроса
+  function handleSubmit(request) {
+    // изменяем текст кнопки до вызова запроса
+    setPreloading(true);
+    request()
+      .then(closeAllPopups)
+      .catch(console.error)
+      // возвращаем обратно начальный текст кнопки
+      .finally(() => setPreloading(false));
+  }
+
   // Поставить лайк
   function handleCardLike(card) {
-    // Проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, !isLiked)
-      .then((newCard) => {
+    function makeRequest() {
+      const isLiked = card.likes.some((i) => i._id === currentUser._id);
+      // return позволяет дальше продолжать цепочку then, catch, finally
+      return api.changeLikeCardStatus(card._id, !isLiked)
+        .then((newCard) => {
         setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-      })
-      .catch((error) => console.log(`Что-то пошло не так: ${error}`));
+      });
+    }
+    handleSubmit(makeRequest);
   }
 
   // Удалить карточку
   function handleCardDelete(card) {
-    setPreloading(true);
-    api.deleteCard(card._id)
-      .then(() => {
-        //  создаем копию массива, исключив удаленную карточку и обновляем стейт
-        setCards((state) => state.filter((c) => c._id !== card._id));
-        closeAllPopups();
-      })
-      .catch((error) => console.log(`Что-то пошло не так: ${error}`))
-      .finally(() => {
-        setPreloading(false);
-        setCardToDelete({});
-      });
+    function makeRequest() {
+      return api.deleteCard(card._id)
+        .then(() => {
+          setCards((state) => state.filter((c) => c._id !== card._id));
+        });
+    }
+    handleSubmit(makeRequest);
   }
 
   //Обновить данные профиля
-  function handleUpdateUser(newDataUser) {
-    setPreloading(true);
-    api.setUserInfo(newDataUser)
-      .then((dataUser) => {
-        setCurrentUser(dataUser);
-        closeAllPopups();
-      })
-      .catch((error) => console.log(`Что-то пошло не так: ${error}`))
-      .finally(() => setPreloading(false));
+  function handleUpdateUser(inputValues) {
+    function makeRequest() {
+      return api.setUserInfo(inputValues)
+        .then((dataUser) => {
+          setCurrentUser(dataUser);
+        });
+    }
+    handleSubmit(makeRequest);
   }
 
-  function handleUpdateAvatar(newAvatar) {
-    setPreloading(true);
-    api.setUserAvatar(newAvatar)
-      .then((dataUser) => {
-        setCurrentUser(dataUser);
-        closeAllPopups();
-      })
-      .catch((error) => console.log(`Что-то пошло не так: ${error}`))
-      .finally(() => setPreloading(false));
+  // Обновить аватар
+  function handleUpdateAvatar(inputValue) {
+    function makeRequest() {
+      return api.setUserAvatar(inputValue)
+        .then((dataUser) => {
+          setCurrentUser(dataUser);
+        });
+    }
+    handleSubmit(makeRequest);
   }
 
-  function handleAddPlaceSubmit(cardData) {
-    setPreloading(true);
-    api.postNewCard(cardData)
-      .then((newCard) => {
-        setCards([newCard, ...cards]);
-        closeAllPopups();
-      })
-      .catch((error) => console.log(`Что-то пошло не так: ${error}`))
-      .finally(() => setPreloading(false));
+  // Добавить карточку
+  function handleAddPlaceSubmit(inputValue) {
+    function makeRequest() {
+      return api.postNewCard(inputValue)
+        .then((newCard) => {
+          setCards([newCard, ...cards]);
+        });
+    }
+    handleSubmit(makeRequest);
   }
 
   //«Внедряем» данные из currentUser с помощью провайдера
@@ -136,7 +141,6 @@ function App() {
       <div className="page">
         <Header />
         <Main
-          //1. Обработчики. При клике вызывается функция
           onEditAvatar={handleEditAvatarClick}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
@@ -145,32 +149,26 @@ function App() {
           onTrashClick={handleDeleteCardClick}
           cards={cards}
         />
-
         <Footer />
-
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
           isPreloading={isPreloading}
         />
-
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
           isPreloading={isPreloading}
         />
-
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
           isPreloading={isPreloading}
         />
-
         <DeleteCardPopup
           isOpen={isDeleteCardPopupOpen}
           onClose={closeAllPopups}

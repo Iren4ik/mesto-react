@@ -33,11 +33,11 @@ function Card({card, onCardClick, onCardLike, onTrashClick}) {
   return (
     <li className="elements__element">
       {isOwn && <button className="elements__trash opacity" type="button" onClick={handleTrashClick} />}
-      <img className="elements__photo opacity" src={card.link} alt={card.name} onClick={handleClick}/>
+      <img className="elements__photo opacity" src={card.link} alt={card.name} onClick={handleClick} />
       <div className="elements__caption">
         <h2 className="elements__place">{card.name}</h2>
         <div className="elements__like-container">
-          <button className={cardLikeButtonClassName} type="button" onClick={handleLikeClick}/>
+          <button className={cardLikeButtonClassName} type="button" onClick={handleLikeClick} />
           <p className="elements__like-counter">{card.likes.length}</p>
         </div>
       </div>
